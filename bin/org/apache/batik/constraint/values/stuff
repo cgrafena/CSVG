@@ -1,0 +1,880 @@
+// import java.awt.geom.AffineTransform;
+// import java.io.StringReader;
+// import java.util.StringTokenizer;
+
+// import org.w3c.css.sac.InputSource;
+// import org.w3c.css.sac.LexicalUnit;
+// import org.w3c.dom.DOMException;
+
+// import org.w3c.dom.svg.SVGAngle;
+// import org.w3c.dom.svg.SVGColor;
+// import org.w3c.dom.svg.SVGException;
+// import org.w3c.dom.svg.SVGLength;
+// import org.w3c.dom.svg.SVGLengthList;
+// import org.w3c.dom.svg.SVGMatrix;
+// import org.w3c.dom.svg.SVGNumberList;
+// import org.w3c.dom.svg.SVGPaint;
+// import org.w3c.dom.svg.SVGPoint;
+// import org.w3c.dom.svg.SVGPointList;
+// import org.w3c.dom.svg.SVGRect;
+// import org.w3c.dom.svg.SVGTransformList;
+
+// import org.apache.batik.css.dom.CSSOMSVGColor;
+// import org.apache.batik.css.dom.CSSOMSVGPaint;
+// import org.apache.batik.css.parser.Parser;
+// import org.apache.batik.css.engine.value.svg.SVGColorManager;
+// import org.apache.batik.css.engine.value.svg.SVGPaintManager;
+// import org.apache.batik.dom.svg.AbstractSVGTransformList;
+// import org.apache.batik.dom.svg.AbstractSVGPointList;
+// import org.apache.batik.dom.svg.AbstractSVGLength;
+// import org.apache.batik.dom.svg.AbstractSVGLengthList;
+// import org.apache.batik.dom.svg.AbstractSVGNumberList;
+// import org.apache.batik.dom.svg.SVGOMLength;
+// import org.apache.batik.dom.svg.SVGOMMatrix;
+// import org.apache.batik.dom.svg.SVGOMPoint;
+// import org.apache.batik.dom.svg.SVGOMRect;
+// import org.apache.batik.parser.ParseException;
+// import org.apache.batik.parser.PointsParser;
+// import org.apache.batik.parser.DefaultPointsHandler;
+
+//    /**
+//     * Convert the given string to a colour.
+//     */
+//    public SVGColor parseColor(String value) throws TypeErrorException {
+//        try {
+//            Parser p = new Parser();
+//            InputSource is = new InputSource(new StringReader(value));
+//            final LexicalUnit lu = p.parsePropertyValue(is);
+//            final SVGColorManager ce = new SVGColorManager(null);
+//            return new CSSOMSVGPaint(
+//                new CSSOMSVGColor.ValueProvider() {
+//                    public org.apache.batik.css.engine.value.Value getValue() {
+//                        return ce.createValue(lu, constraintEngine.getCSSEngine());
+//                    }
+//                }
+//            );
+//        } catch (Exception ex) {
+//            invalidStringConversion(value, TYPE_SVG_COLOR);
+//        }
+//        return null;
+//    }
+//
+//    /**
+//     * Convert the given string to a paint.
+//     */
+//    public SVGPaint parsePaint(String value) throws TypeErrorException {
+//        try {
+//            Parser p = new Parser();
+//            InputSource is = new InputSource(new StringReader(value));
+//            final LexicalUnit lu = p.parsePropertyValue(is);
+//            final SVGPaintManager pm = new SVGPaintManager(null);
+//            return new CSSOMSVGPaint(
+//                new CSSOMSVGColor.ValueProvider() {
+//                    public org.apache.batik.css.engine.value.Value getValue() {
+//                        return pm.createValue(lu, constraintEngine.getCSSEngine());
+//                    }
+//                }
+//            );
+//        } catch (Exception ex) {
+//            invalidStringConversion(value, TYPE_PAINT);
+//        }
+//        return null;
+//    }
+//
+//    protected class SVGOMTransformList extends AbstractSVGTransformList {
+//        String s;
+//
+//        SVGOMTransformList(String transform) throws TypeErrorException {
+//            s = transform;
+//            revalidate();
+//            if (itemList == null) {
+//                invalidStringConversion(value, TYPE_TRANSFORM_LIST);
+//            }
+//        }
+//
+//        protected DOMException createDOMException(short type, String key, Object[] args) { return null; } 
+//        protected SVGException createSVGException(short type, String key, Object[] args) { return null; } 
+//        protected String getValueAsString() { return s; } 
+//        protected void setAttributeValue(String value) { }
+//    }
+//
+//    /**
+//     * Convert the given string to a transform list.
+//     */
+//    public SVGTransformList parseTransformList(String value) throws TypeErrorException {
+//        return new SVGOMTransformList(value);
+//    }
+//
+//    protected class SVGOMLengthList extends AbstractSVGLengthList {
+//        String s;
+//
+//        SVGOMLengthList(String lengthList) throws TypeErrorException {
+//            super(AbstractSVGLength.OTHER_LENGTH);
+//            s = lengthList;
+//            revalidate();
+//            if (itemList == null) {
+//                invalidStringConversion(s, TYPE_LENGTH_LIST);
+//            }
+//        }
+//
+//        protected DOMException createDOMException(short type, String key, Object[] args) { return null; } 
+//        protected SVGException createSVGException(short type, String key, Object[] args) { return null; } 
+//        protected Element getElement() { return null; }
+//        protected String getValueAsString() { return s; } 
+//        protected void setAttributeValue(String value) { }
+//    }
+//
+//    /**
+//     * Convert the given string to a length list.
+//     */
+//    public SVGLengthList parseLengthList(String value) throws TypeErrorException {
+//        return new SVGOMLengthList(value);
+//    }
+//
+//    protected class SVGOMNumberList extends AbstractSVGNumberList {
+//        String s;
+//
+//        SVGOMNumberList(String numberList) throws TypeErrorException {
+//            s = numberList;
+//            revalidate();
+//            if (itemList == null) {
+//                invalidStringConversion(value, TYPE_NUMBER_LIST);
+//            }
+//        }
+//
+//        protected DOMException createDOMException(short type, String key, Object[] args) { return null; } 
+//        protected SVGException createSVGException(short type, String key, Object[] args) { return null; } 
+//        protected Element getElement() { return null; }
+//        protected String getValueAsString() { return s; } 
+//        protected void setAttributeValue(String value) { }
+//    }
+//
+//    /**
+//     * Convert the given string to a number list.
+//     */
+//    public SVGNumberList parseNumberList(String value) throws TypeErrorException {
+//        return new SVGOMNumberList(value);
+//    }
+//
+//
+//    protected class SVGOMPointList extends AbstractSVGPointList {
+//        String s;
+//
+//        SVGOMPointList(String pointList) throws TypeErrorException {
+//            s = pointList;
+//            revalidate();
+//            if (itemList == null) {
+//                invalidStringConversion(value, TYPE_POINT_LIST);
+//            }
+//        }
+//
+//        protected DOMException createDOMException(short type, String key, Object[] args) { return null; } 
+//        protected SVGException createSVGException(short type, String key, Object[] args) { return null; } 
+//        protected String getValueAsString() { return s; } 
+//        protected void setAttributeValue(String value) { }
+//    }
+//
+//    /**
+//     * Convert the given string to a point list.
+//     */
+//    public SVGPointList parsePointList(String value) throws TypeErrorException {
+//        return new SVGOMPointList(value);
+//    }
+//
+//    /**
+//     * Convert the given string to a rect.
+//     */
+//    public SVGRect parseRect(String value) throws TypeErrorException {
+//        if (value.length() != 0) {
+//            int i = 0;
+//            float[] r = new float[4];
+//            StringTokenizer st = new StringTokenizer(value, " ,");
+//            try {
+//                while (i < 4 && st.hasMoreTokens()) {
+//                    r[i++] = Float.parseFloat(st.nextToken());
+//                }
+//            } catch (NumberFormatException ex) {
+//                i = 0;
+//            }
+//            if (i == 4) {
+//                return new SVGOMRect(r[0], r[1], r[2], r[3]);
+//            }
+//        }
+//        invalidStringConversion(value, TYPE_RECT);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert the given string to a matrix.
+//     */
+//    public SVGMatrix parseMatrix(String value) throws TypeErrorException {
+//        if (value.length() != 0) {
+//            int i = 0;
+//            float[] m = new float[6];
+//            StringTokenizer st = new StringTokenizer(value, " ,");
+//            try {
+//                while (i < 6 && st.hasMoreTokens()) {
+//                    m[i++] = Float.parseFloat(st.nextToken());
+//                }
+//            } catch (NumberFormatException ex) {
+//                i = 0;
+//            }
+//            if (i == 6) {
+//                return new SVGOMMatrix(
+//                        new AffineTransform(m[0], m[1],
+//                                            m[2], m[3],
+//                                            m[4], m[5]));
+//            }
+//        }
+//        invalidStringConversion(value, TYPE_MATRIX);
+//        return null;
+//    }
+//
+//    /**
+//     * Get the type of this value.
+//     */
+//    public int getType() {
+//        return type;
+//    }
+//    
+//    /**
+//     * Convert this value to a colour.
+//     */
+//    public SVGColor getColor() throws TypeErrorException {
+//        if (type == TYPE_SVG_COLOR || type == TYPE_COLOR || type == TYPE_STRING) {
+//            return parseColor(value);
+//        }
+//        invalidConversion(getType(), TYPE_SVG_COLOR);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a paint.
+//     */
+//    public SVGPaint getPaint() throws TypeErrorException {
+//        if (type == TYPE_URI || type == TYPE_SVG_COLOR || type == TYPE_COLOR || type == TYPE_STRING) {
+//            return parsePaint(value);
+//        }
+//        invalidConversion(getType(), TYPE_PAINT);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a transform list.
+//     */
+//    public SVGTransformList getTransformList() throws TypeErrorException {
+//        if (type == TYPE_TRANSFORM_LIST || type == TYPE_STRING) {
+//            return parseTransformList(value);
+//        }
+//        invalidConversion(getType(), TYPE_TRANSFORM_LIST);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a length list.
+//     */
+//    public SVGLengthList getLengthList() throws TypeErrorException {
+//        if (type == TYPE_LENGTH_LIST || type == TYPE_NUMBER_LIST || type == TYPE_LENGTH || type == TYPE_NUMBER || type == TYPE_INTEGER || type == TYPE_STRING) {
+//            return parseLengthList(value);
+//        }
+//        invalidConversion(getType(), TYPE_LENGTH_LIST);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a number list.
+//     */
+//    public SVGNumberList getNumberList() throws TypeErrorException {
+//        if (type == TYPE_NUMBER_LIST || type == TYPE_NUMBER || type == TYPE_INTEGER || type == TYPE_STRING) {
+//            return parseNumberList(value);
+//        }
+//        invalidConversion(getType(), TYPE_NUMBER_LIST);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a point.
+//     */
+//    public SVGPoint getPoint() throws TypeErrorException {
+//        if (type == TYPE_POINT || type == TYPE_STRING) {
+//            return parsePoint(value);
+//        }
+//        invalidConversion(getType(), TYPE_POINT);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a point list.
+//     */
+//    public SVGPointList getPointList() throws TypeErrorException {
+//        if (type == TYPE_POINT_LIST || type == TYPE_POINT || type == TYPE_STRING) {
+//            return parsePointList(value);
+//        }
+//        invalidConversion(getType(), TYPE_POINT_LIST);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a rect.
+//     */
+//    public SVGRect getRect() throws TypeErrorException {
+//        if (type == TYPE_RECT || type == TYPE_STRING) {
+//            return parseRect(value);
+//        }
+//        invalidConversion(getType(), TYPE_RECT);
+//        return null;
+//    }
+//
+//    /**
+//     * Convert this value to a matrix.
+//     */
+//    public SVGMatrix getMatrix() throws TypeErrorException {
+//        if (type == TYPE_MATRIX || type == TYPE_STRING) {
+//            return parseMatrix(value);
+//        }
+//        invalidConversion(getType(), TYPE_MATRIX);
+//        return null;
+//    }
+
+
+
+
+
+
+    /**
+     * Get the type of the specified attribute on a particularly named element.
+     */
+	public static int getAttributeType(String elementNamespace,
+                                       String elementLocalName, 
+                                       String attributeNamespace, 
+                                       String attributeLocalName) {
+
+        if (attributeNamespace == null) {
+            attributeNamespace = "";
+        }
+
+		if (elementNamespace == null) {
+		} else if (elementNamespace.equals(SVG_NAMESPACE_URI)) {
+			if (attributeNamespace.equals("")) {
+				if (attributeLocalName.equals(SVG_ACCENT_HEIGHT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals("accumulate"))
+					return TYPE_ACCUMULATE_VALUE;
+				else if (attributeLocalName.equals("alignment-baseline"))
+					return TYPE_ALIGNMENT_BASELINE_VALUE;
+				else if (attributeLocalName.equals(SVG_ALPHABETIC_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_AMPLITUDE_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_ARABIC_FORM_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_ASCENT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals("attributeType"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_AZIMUTH_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_BASE_FREQUENCY_ATTRIBUTE))
+					return TYPE_NUMBER_OPTIONAL_NUMBER;
+				else if (attributeLocalName.equals("baseline-shift"))
+					return TYPE_BASELINE_SHIFT_VALUE;
+				else if (attributeLocalName.equals("baseProfile"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_BBOX_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_BIAS_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals("by"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_CALC_MODE_ATTRIBUTE))
+					return TYPE_CALCMODE_VALUE;
+				else if (attributeLocalName.equals(SVG_CAP_HEIGHT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_CLASS_ATTRIBUTE))
+					return TYPE_CLASSLIST;
+				else if (attributeLocalName.equals("clip"))
+					return TYPE_CLIP_VALUE;
+				else if (attributeLocalName.equals(SVG_CLIP_PATH_ATTRIBUTE))
+					return TYPE_OPTIONAL_URI;
+				else if (attributeLocalName.equals("clip-rule"))
+					return TYPE_CLIP_FILL_RULE;
+				else if (attributeLocalName.equals(SVG_CLIP_PATH_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals("color"))
+					return TYPE_COLOR;
+				else if (attributeLocalName.equals(SVG_COLOR_INTERPOLATION_ATTRIBUTE))
+					return TYPE_COLOR_INTERPOLATION_VALUE;
+				else if (attributeLocalName.equals("color-interpolation-filters"))
+					return TYPE_COLOR_INTERPOLATION_VALUE;
+				else if (attributeLocalName.equals("color-profile"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_COLOR_RENDERING_ATTRIBUTE))
+					return TYPE_COLOR_IMAGE_RENDERING_VALUE;
+				else if (attributeLocalName.equals(SVG_CONTENT_SCRIPT_TYPE_ATTRIBUTE))
+					return TYPE_CONTENT_TYPE;
+				else if (attributeLocalName.equals(SVG_CONTENT_STYLE_TYPE_ATTRIBUTE))
+					return TYPE_CONTENT_TYPE;
+				else if (attributeLocalName.equals("cursor"))
+					return TYPE_CURSOR_VALUE;
+				else if (attributeLocalName.equals(SVG_CX_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_CY_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_D_ATTRIBUTE))
+					return TYPE_PATH_DATA;
+				else if (attributeLocalName.equals(SVG_DESCENT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_DIFFUSE_CONSTANT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals("direction"))
+					return TYPE_DIRECTION_VALUE;
+				else if (attributeLocalName.equals("display"))
+					return TYPE_DISPLAY_VALUE;
+				else if (attributeLocalName.equals(SVG_DIVISOR_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals("dominant-baseline"))
+					return TYPE_DOMINANT_BASELINE_VALUE;
+				else if (attributeLocalName.equals("dur"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_DX_ATTRIBUTE) || attributeLocalName.equals(SVG_DY_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_TEXT_TAG) || elementLocalName.equals(SVG_TSPAN_TAG) || elementLocalName.equals(SVG_TREF_TAG) || elementLocalName.equals(SVG_ALT_GLYPH_TAG))
+						return TYPE_LENGTHS;
+					else if (elementLocalName.equals(SVG_GLYPH_REF_TAG) || elementLocalName.equals(SVG_FE_OFFSET_TAG))
+						return TYPE_NUMBER;
+				} else if (attributeLocalName.equals(SVG_EDGE_MODE_ATTRIBUTE))
+					return TYPE_EDGE_MODE_VALUE;
+				else if (attributeLocalName.equals(SVG_ELEVATION_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_ENABLE_BACKGROUND_ATTRIBUTE))
+					return TYPE_ENABLE_BACKGROUND_VALUE;
+				else if (attributeLocalName.equals("end"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_EXPONENT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_EXTERNAL_RESOURCES_REQUIRED_ATTRIBUTE))
+					return TYPE_BOOLEAN;
+				else if (attributeLocalName.equals(SVG_FILL_ATTRIBUTE)) {
+					if (elementLocalName.equals("animate") || elementLocalName.equals("set") || elementLocalName.equals("animateMotion") || elementLocalName.equals("animateColor") || elementLocalName.equals("animateTransform"))
+						return TYPE_FILL_VALUE;
+					else
+						return TYPE_PAINT;
+                } else if (attributeLocalName.equals(SVG_FILL_OPACITY_ATTRIBUTE))
+					return TYPE_OPACITY_VALUE;
+				else if (attributeLocalName.equals(SVG_FILL_RULE_ATTRIBUTE))
+					return TYPE_CLIP_FILL_RULE;
+				else if (attributeLocalName.equals(SVG_FILTER_ATTRIBUTE))
+					return TYPE_OPTIONAL_URI;
+				else if (attributeLocalName.equals(SVG_FILTER_RES_ATTRIBUTE))
+					return TYPE_NUMBER_OPTIONAL_NUMBER;
+				else if (attributeLocalName.equals(SVG_FILTER_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_FLOOD_COLOR_ATTRIBUTE))
+					return TYPE_SVG_COLOR;
+				else if (attributeLocalName.equals(SVG_FLOOD_OPACITY_ATTRIBUTE))
+					return TYPE_OPACITY_VALUE;
+				else if (attributeLocalName.equals(SVG_FONT_FAMILY_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FONT_FACE_TAG))
+						return TYPE_STRING;
+					else
+						return TYPE_FONT_FAMILY_VALUE;
+                } else if (attributeLocalName.equals(SVG_FONT_SIZE_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FONT_FACE_TAG))
+						return TYPE_STRING;
+					else
+						return TYPE_FONT_SIZE_VALUE;
+                } else if (attributeLocalName.equals("font-size-adjust"))
+					return TYPE_FONT_SIZE_ADJUST_VALUE;
+				else if (attributeLocalName.equals(SVG_FONT_STRETCH_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FONT_FACE_TAG))
+						return TYPE_STRING;
+					else
+						return TYPE_FONT_STRETCH_VALUE;
+                } else if (attributeLocalName.equals(SVG_FONT_STYLE_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FONT_FACE_TAG))
+						return TYPE_STRING;
+					else
+						return TYPE_FONT_STYLE_VALUE;
+                } else if (attributeLocalName.equals(SVG_FONT_VARIANT_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FONT_FACE_TAG))
+						return TYPE_STRING;
+					else
+						return TYPE_FONT_VARIANT_VALUE;
+                } else if (attributeLocalName.equals(SVG_FONT_WEIGHT_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FONT_FACE_TAG))
+						return TYPE_STRING;
+					else
+						return TYPE_FONT_WEIGHT_VALUE;
+                } else if (attributeLocalName.equals("format"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("from"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_FX_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_FY_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_G1_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_G2_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_GLYPH_NAME_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("glyph-orientation-horizontal"))
+					return TYPE_GLYPH_ORIENTATION_HORIZONTAL_VALUE;
+				else if (attributeLocalName.equals("glyph-orientation-vertical"))
+					return TYPE_GLYPH_ORIENTATION_VERTICAL_VALUE;
+				else if (attributeLocalName.equals(SVG_GLYPH_REF_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_GRADIENT_TRANSFORM_ATTRIBUTE))
+					return TYPE_TRANSFORM_LIST;
+				else if (attributeLocalName.equals(SVG_GRADIENT_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_HANGING_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_HEIGHT_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_HORIZ_ADV_X_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_HORIZ_ORIGIN_X_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_HORIZ_ORIGIN_Y_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_IDEOGRAPHIC_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_IMAGE_RENDERING_ATTRIBUTE))
+					return TYPE_COLOR_IMAGE_RENDERING_VALUE;
+				else if (attributeLocalName.equals(SVG_IN_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_IN2_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_INTERCEPT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_K_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_K1_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_K2_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_K3_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_K4_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_KERNEL_MATRIX_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_KERNEL_UNIT_LENGTH_ATTRIBUTE))
+					return TYPE_NUMBER_OPTIONAL_NUMBER;
+				else if (attributeLocalName.equals(SVG_KERNING_ATTRIBUTE))
+					return TYPE_KERNING_VALUE;
+				else if (attributeLocalName.equals("keyPoints"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("keySplines"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("keyTimes"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_LANG_ATTRIBUTE))
+					return TYPE_LANGUAGE_CODES;
+				else if (attributeLocalName.equals(SVG_LENGTH_ADJUST_ATTRIBUTE))
+					return TYPE_LENGTH_ADJUST_VALUE;
+				else if (attributeLocalName.equals("letter-spacing"))
+					return TYPE_SPACING_VALUE;
+				else if (attributeLocalName.equals("lighting-color"))
+					return TYPE_SVG_COLOR;
+				else if (attributeLocalName.equals(SVG_LIMITING_CONE_ANGLE_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_LOCAL_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("marker-end"))
+					return TYPE_OPTIONAL_URI;
+				else if (attributeLocalName.equals("marker-mid"))
+					return TYPE_OPTIONAL_URI;
+				else if (attributeLocalName.equals("marker-start"))
+					return TYPE_OPTIONAL_URI;
+				else if (attributeLocalName.equals(SVG_MARKER_HEIGHT_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_MARKER_UNITS_ATTRIBUTE))
+					return TYPE_MARKER_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_MARKER_WIDTH_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals("mask"))
+					return TYPE_OPTIONAL_URI;
+				else if (attributeLocalName.equals(SVG_MASK_CONTENT_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_MASK_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_MATHEMATICAL_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals("max"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_MEDIA_ATTRIBUTE))
+					return TYPE_MEDIA_DESC;
+				else if (attributeLocalName.equals(SVG_METHOD_ATTRIBUTE))
+					return TYPE_METHOD_VALUE;
+				else if (attributeLocalName.equals(SVG_MODE_ATTRIBUTE))
+					return TYPE_MODE_VALUE;
+				else if (attributeLocalName.equals("min"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_NAME_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_NUM_OCTAVES_ATTRIBUTE))
+					return TYPE_INTEGER;
+				else if (attributeLocalName.equals(SVG_OFFSET_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_STOP_TAG))
+						return TYPE_NUMBER_OR_PERCENTAGE;
+					else
+						return TYPE_NUMBER;
+                } else if (attributeLocalName.equals("onabort") || attributeLocalName.equals("onactivate") || attributeLocalName.equals("onbegin") || attributeLocalName.equals("onclick") || attributeLocalName.equals("onend") || attributeLocalName.equals("onerror") || attributeLocalName.equals("onfocusin") || attributeLocalName.equals("onfocusout") || attributeLocalName.equals("onload") || attributeLocalName.equals("onmousedown") || attributeLocalName.equals("onmousemove") || attributeLocalName.equals("onmouseout") || attributeLocalName.equals("onmouseover") || attributeLocalName.equals("onmouseup") || attributeLocalName.equals("onrepeat") || attributeLocalName.equals("onresize") || attributeLocalName.equals("onscroll") || attributeLocalName.equals("onunload") || attributeLocalName.equals("onzoom"))
+					return TYPE_SCRIPT;
+				else if (attributeLocalName.equals(SVG_OPACITY_ATTRIBUTE))
+					return TYPE_OPACITY_VALUE;
+				else if (attributeLocalName.equals(SVG_OPERATOR_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_FE_MORPHOLOGY_TAG))
+						return TYPE_MORPHOLOGY_OPERATOR_VALUE;
+					else if (elementLocalName.equals(SVG_FE_COMPOSITE_TAG))
+						return TYPE_COMPOSITE_OPERATOR_VALUE;
+                } else if (attributeLocalName.equals(SVG_ORDER_ATTRIBUTE))
+					return TYPE_NUMBER_OPTIONAL_NUMBER;
+				else if (attributeLocalName.equals(SVG_ORIENT_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_ORIENTATION_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("origin"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("overflow"))
+					return TYPE_OVERFLOW_VALUE;
+				else if (attributeLocalName.equals(SVG_OVERLINE_POSITION_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_OVERLINE_THICKNESS_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_PANOSE_1_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("path"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("pathLength"))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_PATTERN_CONTENT_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_PATTERN_TRANSFORM_ATTRIBUTE))
+					return TYPE_TRANSFORM_LIST;
+				else if (attributeLocalName.equals(SVG_PATTERN_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals("pointer-events"))
+					return TYPE_POINTER_EVENTS_VALUE;
+				else if (attributeLocalName.equals(SVG_POINTS_ATTRIBUTE))
+					return TYPE_POINTS;
+				else if (attributeLocalName.equals(SVG_POINTS_AT_X_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_POINTS_AT_Y_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_POINTS_AT_Z_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_PRESERVE_ALPHA_ATTRIBUTE))
+					return TYPE_BOOLEAN;
+				else if (attributeLocalName.equals(SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE))
+					return TYPE_PRESERVE_ASPECT_RATIO_SPEC;
+				else if (attributeLocalName.equals(SVG_PRIMITIVE_UNITS_ATTRIBUTE))
+					return TYPE_UNITS_VALUE;
+				else if (attributeLocalName.equals(SVG_R_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_RADIUS_ATTRIBUTE))
+					return TYPE_NUMBER_OPTIONAL_NUMBER;
+				else if (attributeLocalName.equals(SVG_REF_X_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_REF_Y_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_RENDERING_INTENT_ATTRIBUTE))
+					return TYPE_RENDERING_INTENT_VALUE;
+				else if (attributeLocalName.equals("repeatCount"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("repeatDur"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_REQUIRED_EXTENSIONS_ATTRIBUTE))
+					return TYPE_EXTENSION_LIST;
+				else if (attributeLocalName.equals("restart"))
+					return TYPE_RESTART_VALUE;
+				else if (attributeLocalName.equals(SVG_RESULT_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_ROTATE_ATTRIBUTE)) {
+					if (elementLocalName.equals("animateMotion"))
+						return TYPE_STRING;
+					else
+						return TYPE_NUMBERS;
+                } else if (attributeLocalName.equals(SVG_RX_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_RY_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_SCALE_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_SEED_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_SHAPE_RENDERING_ATTRIBUTE))
+					return TYPE_SHAPE_RENDERING_VALUE;
+				else if (attributeLocalName.equals(SVG_SLOPE_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_SPACING_ATTRIBUTE))
+					return TYPE_SPACING_VALUE;
+				else if (attributeLocalName.equals(SVG_SPECULAR_CONSTANT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_SPECULAR_EXPONENT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_SPREAD_METHOD_ATTRIBUTE))
+					return TYPE_SPREAD_METHOD_VALUE;
+				else if (attributeLocalName.equals(SVG_START_OFFSET_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_STD_DEVIATION_ATTRIBUTE))
+					return TYPE_NUMBER_OPTIONAL_NUMBER;
+				else if (attributeLocalName.equals(SVG_STEMH_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_STEMV_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_STITCH_TILES_ATTRIBUTE))
+					return TYPE_STITCH_TILES_VALUE;
+				else if (attributeLocalName.equals(SVG_STOP_COLOR_ATTRIBUTE))
+					return TYPE_SVG_COLOR;
+				else if (attributeLocalName.equals(SVG_STOP_OPACITY_ATTRIBUTE))
+					return TYPE_OPACITY_VALUE;
+				else if (attributeLocalName.equals(SVG_STRIKETHROUGH_POSITION_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_STRIKETHROUGH_THICKNESS_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_STROKE_ATTRIBUTE))
+					return TYPE_PAINT;
+				else if (attributeLocalName.equals(SVG_STROKE_DASHARRAY_ATTRIBUTE))
+					return TYPE_STROKE_DASHARRAY_VALUE;
+				else if (attributeLocalName.equals(SVG_STROKE_DASHOFFSET_ATTRIBUTE))
+					return TYPE_LENGTH_OR_INHERIT;
+				else if (attributeLocalName.equals(SVG_STROKE_LINECAP_ATTRIBUTE))
+					return TYPE_STROKE_LINECAP_VALUE;
+				else if (attributeLocalName.equals(SVG_STROKE_LINEJOIN_ATTRIBUTE))
+					return TYPE_STROKE_LINEJOIN_VALUE;
+				else if (attributeLocalName.equals(SVG_STROKE_MITERLIMIT_ATTRIBUTE))
+					return TYPE_STROKE_MITERLIMIT_VALUE;
+				else if (attributeLocalName.equals(SVG_STROKE_OPACITY_ATTRIBUTE))
+					return TYPE_OPACITY_VALUE;
+				else if (attributeLocalName.equals(SVG_STROKE_WIDTH_ATTRIBUTE))
+					return TYPE_LENGTH_OR_INHERIT;
+				else if (attributeLocalName.equals(SVG_STYLE_ATTRIBUTE))
+					return TYPE_STYLESHEET;
+				else if (attributeLocalName.equals(SVG_SURFACE_SCALE_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_SYSTEM_LANGUAGE_ATTRIBUTE))
+					return TYPE_LANGUAGE_CODES;
+				else if (attributeLocalName.equals(SVG_TABLE_VALUES_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_TARGET_ATTRIBUTE))
+					return TYPE_LINK_TARGET;
+				else if (attributeLocalName.equals(SVG_TARGET_X_ATTRIBUTE))
+					return TYPE_INTEGER;
+				else if (attributeLocalName.equals(SVG_TARGET_Y_ATTRIBUTE))
+					return TYPE_INTEGER;
+				else if (attributeLocalName.equals(SVG_TEXT_ANCHOR_ATTRIBUTE))
+					return TYPE_TEXT_ANCHOR_VALUE;
+				else if (attributeLocalName.equals("text-decoration"))
+					return TYPE_TEXT_DECORATION_VALUE;
+				else if (attributeLocalName.equals(SVG_TEXT_RENDERING_ATTRIBUTE))
+					return TYPE_TEXT_RENDERING_VALUE;
+				else if (attributeLocalName.equals(SVG_TEXT_LENGTH_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_TITLE_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("to"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_TRANSFORM_ATTRIBUTE))
+					return TYPE_TRANSFORM_LIST;
+				else if (attributeLocalName.equals(SVG_TYPE_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_STYLE_TAG) || elementLocalName.equals(SVG_SCRIPT_TAG))
+						return TYPE_CONTENT_TYPE;
+					else if (elementLocalName.equals(SVG_FE_TURBULENCE_TAG))
+						return TYPE_TURBULENCE_TYPE_VALUE;
+					else if (elementLocalName.equals(SVG_FE_COLOR_MATRIX_TAG))
+						return TYPE_COLOR_MATRIX_TYPE_VALUE;
+					else if (elementLocalName.equals("animateTransform"))
+						return TYPE_ANIMATE_TRANSFORM_TYPE_VALUE;
+					else
+						return TYPE_COMPONENT_TRANSFER_TYPE_VALUE;
+                } else if (attributeLocalName.equals(SVG_U1_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_U2_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_UNDERLINE_POSITION_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_UNDERLINE_THICKNESS_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_UNICODE_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("unicode-bidi"))
+					return TYPE_UNICODE_BIDI_VALUE;
+				else if (attributeLocalName.equals(SVG_UNICODE_RANGE_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_UNITS_PER_EM_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_V_ALPHABETIC_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_V_HANGING_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_V_IDEOGRAPHIC_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_V_MATHEMATICAL_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_VALUES_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals(SVG_VERSION_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_VERT_ADV_Y_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_VERT_ORIGIN_X_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_VERT_ORIGIN_Y_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_VIEW_BOX_ATTRIBUTE))
+					return TYPE_VIEW_BOX_SPEC;
+				else if (attributeLocalName.equals("viewTarget"))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("visibility"))
+					return TYPE_VISIBILITY_VALUE;
+				else if (attributeLocalName.equals(SVG_WIDTH_ATTRIBUTE))
+					return TYPE_LENGTH;
+				else if (attributeLocalName.equals(SVG_WIDTHS_ATTRIBUTE))
+					return TYPE_STRING;
+				else if (attributeLocalName.equals("word-spacing"))
+					return TYPE_SPACING_VALUE;
+				else if (attributeLocalName.equals("writing-mode"))
+					return TYPE_WRITING_MODE_VALUE;
+				else if (attributeLocalName.equals(SVG_X_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_GLYPH_REF_TAG) || elementLocalName.equals(SVG_FE_POINT_LIGHT_TAG) || elementLocalName.equals(SVG_FE_SPOT_LIGHT_TAG))
+						return TYPE_NUMBER;
+					else if (elementLocalName.equals(SVG_TEXT_TAG) || elementLocalName.equals(SVG_TSPAN_TAG) || elementLocalName.equals(SVG_TREF_TAG) || elementLocalName.equals(SVG_ALT_GLYPH_TAG))
+						return TYPE_COORDINATE/*S*/;    // XXX temporary hack
+					else
+						return TYPE_COORDINATE;
+                } else if (attributeLocalName.equals(SVG_X_HEIGHT_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_X1_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_X2_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_X_CHANNEL_SELECTOR_ATTRIBUTE))
+					return TYPE_CHANNEL_SELECTOR_VALUE;
+				else if (attributeLocalName.equals(SVG_Y_ATTRIBUTE)) {
+					if (elementLocalName.equals(SVG_GLYPH_REF_TAG) || elementLocalName.equals(SVG_FE_POINT_LIGHT_TAG) || elementLocalName.equals(SVG_FE_SPOT_LIGHT_TAG))
+						return TYPE_NUMBER;
+					else if (elementLocalName.equals(SVG_TEXT_TAG) || elementLocalName.equals(SVG_TSPAN_TAG) || elementLocalName.equals(SVG_TREF_TAG) || elementLocalName.equals(SVG_ALT_GLYPH_TAG))
+						return TYPE_COORDINATE/*S*/;    // XXX temporary hack
+					else
+						return TYPE_COORDINATE;
+                } else if (attributeLocalName.equals(SVG_Y1_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_Y2_ATTRIBUTE))
+					return TYPE_COORDINATE;
+				else if (attributeLocalName.equals(SVG_Y_CHANNEL_SELECTOR_ATTRIBUTE))
+					return TYPE_CHANNEL_SELECTOR_VALUE;
+				else if (attributeLocalName.equals(SVG_Z_ATTRIBUTE))
+					return TYPE_NUMBER;
+				else if (attributeLocalName.equals(SVG_ZOOM_AND_PAN_ATTRIBUTE))
+					return TYPE_ZOOM_AND_PAN_VALUE;
+			}
+		} else if (attributeNamespace.equals("http://www.w3.org/1999/xlink")) {
+			if (attributeLocalName.equals("href"))
+				return TYPE_URI;
+		}
+		return TYPE_UNKNOWN;
+	}
+
