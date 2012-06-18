@@ -407,6 +407,7 @@ public class ConstraintsAnimationEngine {
                            //System.out.println("[" + System.currentTimeMillis() + "]" + " Firing " + evt.getAttributeName() + " with value " + evt.getNewValue() 
                            	//+ " for element " + evt.getElement().getNodeName() + " (id: " + evt.getElement().getAttribute("id") + ")");
                             l.animatedValueUpdated(evt);
+                            System.out.println("Element gets changed" + evt.getElement());
                             evt.getElement().setAttributeNS(null, evt.getAttributeName(), evt.getNewValue());
                             
                             /*for (int z = 0; z< pendingAnimations.size(); z++) {

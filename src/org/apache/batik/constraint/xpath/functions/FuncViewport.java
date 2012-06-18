@@ -38,9 +38,9 @@ public class FuncViewport extends ConstraintFunction {
         }
         SVGSVGElement svg = d.getRootElement();
                 
-        //return new XConstraintObject(new RectValue(svg.getViewport()));
+        return new XConstraintObject(new RectValue(svg.getViewport()));
         //UserAgent ua = new UserAgentAdapter();
        //return new XConstraintObject(new RectValue(0, 0, (float)ua.getViewportSize().getWidth(), (float)ua.getViewportSize().getHeight()));
-        return new XConstraintObject(new RectValue(0, 0, 500, 420)); // xgx: svg.getViewport() never return and blocks GUI??
+       // return new XConstraintObject(new RectValue(0, 0, 500, 420)); // xgx: svg.getViewport() never return and blocks GUI??
     }
 }

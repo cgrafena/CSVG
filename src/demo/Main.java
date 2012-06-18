@@ -2,69 +2,56 @@ package demo;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Random;
 
-import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.constraint.ConstraintEngine;
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.dom.svg.SVGOMDocument;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.util.SVGConstants;
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGTextElement;
 
 
  
 /**
- * LogoDemo
+ * CSVG demo
  *
  * @author cgrafena
  */
-public class Main extends JApplet {
+public class Main {
 
-	private static final long serialVersionUID = -9072664017480216697L;
-
-	protected MyJSVGCanvas canvas;
-    protected SVGDocument doc;
-    
+	private static final long serialVersionUID = -9072664017480216697L;	
+	private MyJSVGCanvas canvas = new MyJSVGCanvas();
+    private SVGDocument doc;
+    private JFrame frame;
+        
     protected String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
-    private static final int BASE_FONT_SIZE = 80;
+    private static final int BASE_FONT_SIZE = 50;
 
     // svg and css dom boot
     GraphicsNode rootGN;
@@ -77,32 +64,24 @@ public class Main extends JApplet {
     JTextField jtfHeadline, jtfDownline;
     JLabel jlHeadline, jlCompanyWebaddress, jlDownline, jlCompanyForm, jlFontFamily, jlStatus;
     JComboBox<String> jcbFontFamily;
-
-    public void init() {
-    	// set applet size
-    	setSize(500, 500);
-    	
-		// init swing
-		 try { 
-		      SwingUtilities.invokeAndWait(new Runnable () { 
-		        public void run() { 
-		          guiInit(); // initialize the GUI 
-		    } 
-		  }); 
-		} catch(Exception exc) { 
-			System.out.println("Can't create swing because of "+ exc); 
-			exc.printStackTrace();
-		}
     
-    initSVGDocument();
+    public static void main(String[] args) {
+    	new Main();
+    }
+    
+   public Main() {
+	   initSVGDocument();
+	   guiInit();
     }
     
     public void initSVGDocument() {
     	  // Create an SVG document.
-    	
-     	DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();            
+    	DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();            
      	doc = (SVGDocument) impl.createDocument(svgNS, "svg", null);
      	
+     	// create canvas and config it
+     	//canvas = new MyJSVGCanvas();    
+     	     	
     	// init svg and css dom
     	userAgent = new UserAgentAdapter();
         loader    = new DocumentLoader(userAgent);
@@ -111,26 +90,12 @@ public class Main extends JApplet {
         ctx.setDynamicState(BridgeContext.DYNAMIC);
         builder   = new GVTBuilder();
         rootGN    = builder.build(ctx, doc);
-     	    	
-    	// display document in the svg canvas
-    	canvas.setSVGDocument(doc);
+        
+        canvas.setSVGDocument(doc);
+        canvas.setSize(500, 400);
+
     }
     
-    private void removeAllElementsFromCanvas() {    	
-    	ArrayList<Node> al = new ArrayList<Node>();
-    	 
-    	// collect all nodes
-    	Node n = doc.getDocumentElement().getFirstChild();
-    	while (n != null) {
-    		al.add(n);
-    		n = n.getNextSibling();    			
-    	}
-    	// remove all nodes
-    	for (Node x : al) {
-    		doc.getDocumentElement().removeChild(x);
-    	}    	    	
-    	canvas.setSVGDocument(doc);    	
-    }
     
     /**
      * creates a rectangle
@@ -160,7 +125,7 @@ public class Main extends JApplet {
   	 		
 		doc.getRootElement().setAttributeNS(null, "xmlns:c", "http://mcc.id.au/2004/csvg");
 		    		
-   		Element headline = createTextNode(sHeadline, "headline", null, String.valueOf(BASE_FONT_SIZE), "black", "middle");
+   		Element headline = createTextNode(sHeadline, "headline", "Arial", String.valueOf(BASE_FONT_SIZE), "black", "middle");
    		Element cHeadlineX = doc.createElementNS("http://mcc.id.au/2004/csvg", "c:constraint");
    		cHeadlineX.setAttributeNS(null, "attributeName", "x");
    		cHeadlineX.setAttributeNS(null, "value", "c:width(c:viewport()) div 2");
@@ -172,20 +137,35 @@ public class Main extends JApplet {
    		headline.appendChild(cHeadlineX);
    		headline.appendChild(cHeadlineY);
    		
-   		Element downline = createTextNode(sDownline, "downline", null, "10", "black", null);
+   		Element sideline = createTextNode("Sideline", "sideline", "Arial", "10", "black", null);
+   		Element cSidelineX = doc.createElementNS("http://mcc.id.au/2004/csvg", "c:constraint");
+   		cSidelineX.setAttributeNS(null, "attributeName", "x");
+   		cSidelineX.setAttributeNS(null, "value", "c:x(c:bbox(id('headline'))) + c:width(c:bbox(id('headline')))");
+   		
+   		Element cSidelineY = doc.createElementNS("http://mcc.id.au/2004/csvg", "c:constraint");
+   		cSidelineY.setAttributeNS(null, "attributeName", "y");
+   		
+   		cSidelineY.setAttributeNS(null, "value", "c:y(c:bbox(id('headline'))) + c:height(c:bbox(id('headline')))");
+   		
+   		
+   		
+   		Element downline = createTextNode("Downline", "downline", "Arial", "10", "black", "middle");
    		Element cDownlineX = doc.createElementNS("http://mcc.id.au/2004/csvg", "c:constraint");
    		cDownlineX.setAttributeNS(null, "attributeName", "x");
-   		cDownlineX.setAttributeNS(null, "value", "c:x(c:bbox(id('headline'))) + c:width(c:bbox(id('headline')))");
+   		cDownlineX.setAttributeNS(null, "value", "c:x(c:bbox(id('headline'))) + ((c:width(c:bbox(id('headline')))) div 2)");
    		
    		Element cDownlineY = doc.createElementNS("http://mcc.id.au/2004/csvg", "c:constraint");
    		cDownlineY.setAttributeNS(null, "attributeName", "y");
-   		
-   		cDownlineY.setAttributeNS(null, "value", "c:y(c:bbox(id('headline'))) + c:height(c:bbox(id('headline')))");
+   		cDownlineY.setAttributeNS(null, "value", "c:y(c:bbox(id('headline'))) + c:height(c:bbox(id('headline'))) + c:height(c:bbox(id('downline'))) + 10");
    		
    		downline.appendChild(cDownlineX);
    		downline.appendChild(cDownlineY);
    		
+   		sideline.appendChild(cSidelineX);
+   		sideline.appendChild(cSidelineY);
+   		
    		doc.getRootElement().appendChild(headline);
+   		doc.getRootElement().appendChild(sideline);
    		doc.getRootElement().appendChild(downline);
     		  
     }
@@ -207,7 +187,7 @@ public class Main extends JApplet {
         tElem.appendChild (text);
 		
 		// Set the attributes of the <text> element
-        //tElem.setAttributeNS (null, "font-family", fontFamily);
+        tElem.setAttributeNS (null, "font-family", fontFamily);
                
         tElem.setAttributeNS (null, "font-size", fontSize);
 		// Notice that we set the font color here
@@ -264,34 +244,16 @@ public class Main extends JApplet {
         **/
         
     }
-    
-    public void start() {       
-    	// Display the document.
-        canvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
-        canvas.setDocument(doc);
-        
-    }
-
-    public void stop() {
-        // Remove the document.
-        canvas.setDocument(null);
-    }
-
-    public void destroy() {
-        canvas.dispose();
-    }
-    
-    
+   
     
     /**
      * Setup and initialize the GUI.  
      */
     private void guiInit() { 
-    	// Set the applet to use flow layout.
+    	
+    	
     	JPanel mainPanel = new JPanel();
-    	JPanel headerPanel = new JPanel();    	
-        canvas = new MyJSVGCanvas();    
-        canvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
+    	JPanel headerPanel = new JPanel();
     	jbtnUpdate = new JButton("Aktualisieren");
     	jbtnSave = new JButton("Speichern");
     	jlHeadline = new JLabel("Headline");
@@ -318,8 +280,16 @@ public class Main extends JApplet {
     	mainPanel.add(BorderLayout.CENTER, canvas);
     	jlStatus.setHorizontalAlignment(SwingConstants.CENTER);
     	mainPanel.add(BorderLayout.SOUTH, jlStatus);
-    	this.setContentPane(mainPanel);
     	
+    	// frame settings
+    	frame = new JFrame();
+    	
+    	frame.getContentPane().add(mainPanel);
+    	frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+    	
+    	frame.setSize(500, 500);
+    	
+    	frame.setVisible(true);
     	
     	// Add action listeners for the buttons. 
     	jbtnUpdate.addActionListener(new ActionListener() {      
@@ -340,7 +310,7 @@ public class Main extends JApplet {
 			    	}
 			    		
 			    	else {
-			    		jlStatus.setText("Bitte Firmenname eingeben");
+			    		jlStatus.setText("Please insert Headline & Downline");
 			    		jlStatus.setVisible(true);
 			    	}
 			    }
